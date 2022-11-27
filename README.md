@@ -1,22 +1,22 @@
 # Experiment--09-Configuring-UART-in-LPC2148-for-serial-data-transmission-
 
-Name :	
-Roll no 
-Date of experiment :
+Name :	Silambarasan K
+Roll no 21222123101
+Date of experiment :25/11/22
 
-
-
- Date: 
 ### Configuring UART in LPC2148 for serial data transmission 
 
 ### Aim: 
-To configure internal UART for transferring serial data and display it on the Virtual terminal  
-Components required: Proteus ISIS professional suite, Kiel μ vision 5 Development environment 
+To configure internal UART for transferring serial data and display it on the Virtual terminal 
+Components required: Proteus ISIS professional suite, Kiel μ vision 5 Development environment .
+
 ### Theory: 
-	The UART Protocol uses only two wires (or pins in a device like microcontroller) to transmit the data. In that, one is for transmitting the data and the pin is called TX pin in the device. The other pin is used to receive the data and is called RX pin.
+
+The UART Protocol uses only two wires (or pins in a device like microcontroller) to transmit the data. In that, one is for transmitting the data and the pin is called TX pin in the device. The other pin is used to receive the data and is called RX pin.
 As UART is a serial communication, the data is transmitted in a series of packets. Usually, a packet consists of 4 parts: a start bit, the actual data, a parity bit and stop bits. The following image shows a typical structure of the data packet in UART.
-![image](https://user-images.githubusercontent.com/36288975/203727146-383ce4b4-677b-44c3-bb13-a9e203950760.png)
 ### FIGURE -01 UART PACKET 
+![image](https://user-images.githubusercontent.com/36288975/203727146-383ce4b4-677b-44c3-bb13-a9e203950760.png)
+
 
 
 ### UART in LPC2148
@@ -43,16 +43,47 @@ UART0 Interrupt Identification Register (U0IIR): The Interrupt Identification Re
 UART0 FIFO Control Register (U0FCR): The FIFO Control Register controls the operation of the RX and TX FIFOs in UART0. Bit 0 is used to enable or disable the FIFO. Bit 1 is used to reset the RX FIFO. Bit 2 is used to reset the TX FIFO. Bits 6 and 7 are used to control when the interrupt must occur i.e. after how many receiver characters.
 UART0 Line Control Register (U0LCR): The Line Control Register is used to set the format of the data which is transmitted or received.
 
-
+## Figure -02 UART interface virtual terminal
 ![image](https://user-images.githubusercontent.com/36288975/203729175-35823e84-cdad-4cd2-8334-2a7477de528f.png)
 
-## Figure -02 UART interface virtual terminal
+
 
 ### Kiel - Program 
+```
+#include <LPC213x.H> // LPC21xx definitions */
+char a;
+void uart0_init(){
+PINSEL0 = 0x00000005; // Enable RxD0 and TxD0 */
+U0LCR = 0x83; // 8 bits, no Parity, 1 Stop bit */
+U0DLL = 97; // 9600 Baud Rate @ 15MHz VPB Clock */
+U0LCR = 0x03; // DLAB = 0 */
+}
+void uart0_putc(char c){
+while(!(U0LSR & 0x20)); 
+	U0THR = c; // Send character
+}
+int uart0_getc (void) {
+while (!(U0LSR & 0x01));
+return (U0RBR);
+}
+int main (void) {
+uart0_init();
+while (1) {
+a=uart0_getc();
+uart0_putc(a);
+}
+}
 
 
+```
 
-
+## OUTPUT:
+### Befor Stimuation:
+![img](B-S.png)
+### After Stimulation:
+![img](A-S.png)
+### Circuit:
+![img](circuit.png)
 
 
 
@@ -71,5 +102,4 @@ UART0 Line Control Register (U0LCR): The Line Control Register is used to set th
 ### Result :
 UART is programmed for transmitting serial data on virtual terminal  
 
-### Output screen shots :
 
